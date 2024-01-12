@@ -53,14 +53,34 @@ const average = (arr) =>
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
+  const [IsLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   useEffect(function () {
     async function fetchMovies() {
-      const data = await fetch(
-        `http://www.omdbapi.com/?i=tt3896198&apikey=${key}&s=${query}`
-      );
-      const json = await data.json();
-      setMovies(json.Search);
-      console.log(json.Search);
+      try {
+        setIsLoading(true);
+        const res = await fetch(
+          `http://www.omdbapi.com/?i=tt3896198&apikey=${key}&s=${query}`
+        );
+        if (!res.ok) {
+          throw new Error("Something went wrong");
+        }
+        const json = await res.json();
+
+        if (json.Response === "False") {
+          throw new Error("Moive Not Found");
+        }
+        // const json = await res.json();
+        setMovies(json.Search);
+        console.log(json.Search);
+        setIsLoading(false);
+        console.log(json);
+      } catch (err) {
+        console.error(err.message);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
     }
     fetchMovies();
   }, []);
@@ -73,7 +93,10 @@ export default function App() {
       </Navbar>
       <Main movies={movies}>
         <Box>
-          <MoiveList movies={movies} />
+          {/* {IsLoading ? <Loader /> : <MoiveList movies={movies} />} */}
+          {IsLoading && <Loader />}
+          {!IsLoading && !error && <MoiveList movies={movies} />}
+          {error && <Error message={error} />}
         </Box>
         <Box>
           <WatchSummery watched={watched} />
@@ -83,7 +106,17 @@ export default function App() {
     </>
   );
 }
-
+function Loader() {
+  return <p className="loader">Loading... </p>;
+}
+function Error({ message }) {
+  return (
+    <p className="error">
+      <span>⛔</span>
+      {message}
+    </p>
+  );
+}
 function Navbar({ children }) {
   return <nav className="nav-bar">{children}</nav>;
 }
