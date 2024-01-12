@@ -47,48 +47,53 @@ const tempWatchedData = [
   },
 ];
 const key = "341e3adc";
-const query = "Batman&page=2";
+const tempquery = "Batman&page=2";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 export default function App() {
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
   const [IsLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  useEffect(function () {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(
-          `http://www.omdbapi.com/?i=tt3896198&apikey=${key}&s=${query}`
-        );
-        if (!res.ok) {
-          throw new Error("Something went wrong");
-        }
-        const json = await res.json();
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        try {
+          setIsLoading(true);
+          setError("");
+          const res = await fetch(
+            `http://www.omdbapi.com/?i=tt3896198&apikey=${key}&s=${query}`
+          );
+          if (!res.ok) {
+            throw new Error("Something went wrong");
+          }
+          const json = await res.json();
 
-        if (json.Response === "False") {
-          throw new Error("Moive Not Found");
+          if (json.Response === "False") {
+            throw new Error("Movie Not Found");
+          }
+
+          // const json = await res.json();
+          setMovies(json.Search);
+          console.log(json.Search);
+          setIsLoading(false);
+        } catch (err) {
+          console.error(err.message);
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
         }
-        // const json = await res.json();
-        setMovies(json.Search);
-        console.log(json.Search);
-        setIsLoading(false);
-        console.log(json);
-      } catch (err) {
-        console.error(err.message);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
       }
-    }
-    fetchMovies();
-  }, []);
+      fetchMovies();
+    },
+    [query]
+  );
   return (
     <>
       <Navbar>
         <Logo />
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NumResult movies={movies} />
       </Navbar>
       <Main movies={movies}>
@@ -128,8 +133,7 @@ function Logo() {
     </div>
   );
 }
-function Search() {
-  const [query, setQuery] = useState("");
+function Search({ query, setQuery }) {
   return (
     <input
       className="search"
