@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 const tempMovieData = [
   {
@@ -47,7 +47,6 @@ const tempWatchedData = [
   },
 ];
 const key = "341e3adc";
-const tempquery = "Batman&page=2";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 export default function App() {
@@ -56,6 +55,13 @@ export default function App() {
   const [watched, setWatched] = useState(tempWatchedData);
   const [IsLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedId, setSelectedID] = useState(null);
+  function handleSelectMovie(id) {
+    setSelectedID((selectedId) => (id === selectedId ? null : id));
+  }
+  function handleCloseMovie() {
+    setSelectedID(null);
+  }
   useEffect(
     function () {
       async function fetchMovies() {
@@ -100,12 +106,23 @@ export default function App() {
         <Box>
           {/* {IsLoading ? <Loader /> : <MoiveList movies={movies} />} */}
           {IsLoading && <Loader />}
-          {!IsLoading && !error && <MoiveList movies={movies} />}
+          {!IsLoading && !error && (
+            <MoiveList movies={movies} onSelectMovie={handleSelectMovie} />
+          )}
           {error && <Error message={error} />}
         </Box>
         <Box>
-          <WatchSummery watched={watched} />
-          <WatchedMoiveList watched={watched} />
+          {selectedId ? (
+            <MovieDetail
+              selectedId={selectedId}
+              onCloseMovie={handleCloseMovie}
+            />
+          ) : (
+            <>
+              <WatchSummery watched={watched} />
+              <WatchedMoiveList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
@@ -188,18 +205,22 @@ function WatchedList() {
   );
 }
   */
-function MoiveList({ movies }) {
+function MoiveList({ movies, onSelectMovie }) {
   return (
     <ul className="list">
       {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} />
+        <Movie movie={movie} key={movie.imdbID} onSelectMovie={onSelectMovie} />
       ))}
     </ul>
   );
 }
-function Movie({ movie }) {
+function Movie({ movie, onSelectMovie }) {
   return (
-    <li>
+    <li
+      onClick={() => onSelectMovie(movie.imdbID)}
+      className="movie"
+      key={movie.imdbID}
+    >
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
@@ -209,6 +230,29 @@ function Movie({ movie }) {
         </p>
       </div>
     </li>
+  );
+}
+function MovieDetail({ selectedId, onCloseMovie }) {
+  useEffect(
+    function () {
+      async function getMoiveDetails() {
+        const res = await fetch(
+          `http://www.omdbapi.com/?i=tt3896198&apikey=${key}&i=${selectedId}`
+        );
+        const json = await res.json();
+        console.log(json);
+      }
+      getMoiveDetails();
+    },
+    [selectedId]
+  );
+  return (
+    <div className="details">
+      <button className="btn-back" onClick={onCloseMovie}>
+        &larr;
+      </button>
+      {selectedId}
+    </div>
   );
 }
 
