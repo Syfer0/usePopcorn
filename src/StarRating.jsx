@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 //in industry standards use the Typriscript insted of the prop-types
+
 const ContainerStyle = {
   display: "flex",
   alignItem: "centre",
