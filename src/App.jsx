@@ -233,19 +233,27 @@ function Movie({ movie, onSelectMovie }) {
   );
 }
 function MovieDetail({ selectedId, onCloseMovie }) {
-  useEffect(
-    function () {
-      async function getMoiveDetails() {
+  useEffect(() => {
+    async function fetchMovie() {
+      console.log(selectedId);
+      try {
         const res = await fetch(
-          `http://www.omdbapi.com/?i=tt3896198&apikey=${key}&i=${selectedId}`
+          `https://www.omdbapi.com/?i=${selectedId}&apikey=${key}`
         );
         const json = await res.json();
         console.log(json);
+      } catch (error) {
+        console.error("Error fetching movie:", error);
       }
-      getMoiveDetails();
-    },
-    [selectedId]
-  );
+    }
+
+    fetchMovie();
+
+    return () => {
+      console.log("unmount");
+    };
+  }, [selectedId]);
+
   return (
     <div className="details">
       <button className="btn-back" onClick={onCloseMovie}>
