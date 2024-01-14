@@ -1,6 +1,7 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
-const tempMovieData = [
+{
+  /*{const tempMovieData = [
   {
     imdbID: "tt1375666",
     Title: "Inception",
@@ -45,7 +46,8 @@ const tempWatchedData = [
     imdbRating: 8.5,
     userRating: 9,
   },
-];
+];*/
+}
 const key = "341e3adc";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -89,6 +91,7 @@ export default function App() {
 
           // const json = await res.json();
           setMovies(json.Search);
+          // setTotalResults(json.totalResults);
           console.log(json.Search);
           setIsLoading(false);
         } catch (err) {
@@ -112,7 +115,7 @@ export default function App() {
       <Navbar>
         <Logo />
         <Search query={query} setQuery={setQuery} />
-        <NumResult movies={movies} />
+        <NumResults movies={movies} />
       </Navbar>
       <Main movies={movies}>
         <Box>
@@ -178,11 +181,15 @@ function Search({ query, setQuery }) {
     />
   );
 }
-function NumResult({ movie }) {
+function NumResults({ movies }) {
   return (
-    <p className="num-results">
-      Found <strong>10</strong> results
-    </p>
+    <div className="num-results">
+      {movies && movies.length > 0 && (
+        <p>
+          Number of results: <span>{movies.length}</span>
+        </p>
+      )}
+    </div>
   );
 }
 function Main({ children }) {
