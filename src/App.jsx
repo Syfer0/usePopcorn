@@ -51,8 +51,8 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 export default function App() {
   const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
   const [IsLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedID] = useState(null);
@@ -61,6 +61,9 @@ export default function App() {
   }
   function handleCloseMovie() {
     setSelectedID(null);
+  }
+  function handleAtWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
   }
   useEffect(
     function () {
@@ -116,6 +119,7 @@ export default function App() {
             <MovieDetail
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
+              onAddWatch={handleAtWatched}
             />
           ) : (
             <>
@@ -232,9 +236,10 @@ function Movie({ movie, onSelectMovie }) {
     </li>
   );
 }
-function MovieDetail({ selectedId, onCloseMovie }) {
+function MovieDetail({ selectedId, onCloseMovie, onAddWatch }) {
   const [movie, setMovies] = useState({});
   const [IsLoading, setIsLoading] = useState(false);
+  const [userRating, setUserRating] = useState("");
   const {
     Title: title,
     Year: year,
@@ -272,6 +277,19 @@ function MovieDetail({ selectedId, onCloseMovie }) {
     };
   }, [selectedId]);
 
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: runtime.split(" ").at(0),
+      userRating,
+    };
+    onAddWatch(newWatchedMovie);
+    onCloseMovie();
+  }
   return (
     <div className="details">
       {IsLoading ? (
@@ -297,7 +315,17 @@ function MovieDetail({ selectedId, onCloseMovie }) {
           </header>
           <section>
             <div className="rating ">
-              <StarRating maxRating={10} size={24} />
+              <StarRating
+                maxRating={10}
+                size={24}
+                on
+                onSetRating={setUserRating}
+              />
+              {userRating > 0 && (
+                <button className="btn-add" onClick={handleAdd}>
+                  + Add to list{" "}
+                </button>
+              )}
             </div>
             <p>
               <em>{plot}</em>
@@ -351,8 +379,8 @@ function WatchedMoiveList({ watched }) {
 function WatchedMoive({ movie }) {
   return (
     <li>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
+      <img src={movie.poster} alt={`${movie.title} poster`} />
+      <h3>{movie.title}</h3>
       <div>
         <p>
           <span>⭐️</span>
