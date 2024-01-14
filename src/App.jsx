@@ -68,6 +68,7 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
+
   useEffect(
     function () {
       async function fetchMovies() {
@@ -265,6 +266,21 @@ function MovieDetail({ selectedId, onCloseMovie, onAddWatch, watched }) {
     Director: director,
     Genre: genre,
   } = movie;
+  useEffect(() => {
+    function callback(e) {
+      if (e.key === "Escape") {
+        onCloseMovie();
+        console.log("close");
+      }
+    }
+
+    document.addEventListener("keydown", callback);
+
+    return () => {
+      document.removeEventListener("keydown", callback);
+    };
+  }, [onCloseMovie]);
+
   useEffect(() => {
     async function getMoiveDetails() {
       setIsLoading(true);
