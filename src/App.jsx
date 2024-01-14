@@ -178,10 +178,10 @@ function Search({ query, setQuery }) {
     />
   );
 }
-function NumResult() {
+function NumResult({ movie }) {
   return (
     <p className="num-results">
-      Found <strong>X</strong> results
+      Found <strong>10</strong> results
     </p>
   );
 }
