@@ -288,7 +288,13 @@ function MovieDetail({ selectedId, onCloseMovie, onAddWatch, watched }) {
       console.log("unmount");
     };
   }, [selectedId]);
-
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `Movie | ${title}`;
+    },
+    [title]
+  );
   function handleAdd() {
     const newWatchedMovie = {
       imdbID: selectedId,
