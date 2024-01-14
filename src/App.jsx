@@ -92,12 +92,17 @@ export default function App() {
           console.log(json.Search);
           setIsLoading(false);
         } catch (err) {
-          console.error(err.message);
+          console.log(err.message);
           setError(err.message);
         } finally {
           setIsLoading(false);
         }
       }
+      if (query.length > 3) {
+        setMovies([]);
+        setError("");
+      }
+      handleCloseMovie();
       fetchMovies();
     },
     [query]
@@ -270,7 +275,6 @@ function MovieDetail({ selectedId, onCloseMovie, onAddWatch, watched }) {
     function callback(e) {
       if (e.key === "Escape") {
         onCloseMovie();
-        console.log("close");
       }
     }
 
@@ -284,14 +288,13 @@ function MovieDetail({ selectedId, onCloseMovie, onAddWatch, watched }) {
   useEffect(() => {
     async function getMoiveDetails() {
       setIsLoading(true);
-      console.log(selectedId);
+
       try {
         const res = await fetch(
           `https://www.omdbapi.com/?i=${selectedId}&apikey=${key}`
         );
         const json = await res.json();
         setMovies(json);
-        console.log(json);
       } catch (error) {
         console.error("Error fetching movie:", error);
       }
