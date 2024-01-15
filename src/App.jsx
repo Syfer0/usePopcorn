@@ -7,23 +7,32 @@ const average = (arr) =>
 export default function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [IsLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedID] = useState(null);
+  const [watched, setWatched] = useState(function () {
+    const storedValue = localStorage.getItem("watched");
+    return JSON.parse(storedValue);
+  });
   function handleSelectMovie(id) {
     setSelectedID((selectedId) => (id === selectedId ? null : id));
   }
   function handleCloseMovie() {
     setSelectedID(null);
   }
-  function handleAtWatched(movie) {
+  function handleAddWatched(movie) {
     setWatched((watched) => [...watched, movie]);
+    localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
-
+  useEffect(
+    function () {
+      localStorage.setItem("watched", JSON.stringify(watched));
+    },
+    [watched]
+  );
   useEffect(
     function () {
       async function fetchMovies() {
@@ -84,7 +93,7 @@ export default function App() {
             <MovieDetail
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
-              onAddWatch={handleAtWatched}
+              onAddWatch={handleAddWatched}
               watched={watched}
             />
           ) : (
@@ -212,7 +221,7 @@ function Movie({ movie, onSelectMovie }) {
 function MovieDetail({ selectedId, onCloseMovie, onAddWatch, watched }) {
   const [movie, setMovies] = useState({});
   const [IsLoading, setIsLoading] = useState(false);
-  const [userRating, setUserRating] = useState("");
+  const [userRating, setUserRating] = useState("0");
   const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(
     (movie) => movie.imdbID === selectedId
@@ -264,7 +273,7 @@ function MovieDetail({ selectedId, onCloseMovie, onAddWatch, watched }) {
     getMoiveDetails();
 
     return () => {
-      console.log("unmount");
+      // console.log("unmount");
     };
   }, [selectedId]);
   useEffect(
