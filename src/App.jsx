@@ -343,8 +343,8 @@ function MovieDetail({ selectedId, onCloseMovie, onAddWatch, watched }) {
                   you rated with movie {watchedUserRating} <span>⭐</span>
                 </p>
               )}
-              <TrailerButton movieTitle={movie.Title} />
             </div>
+            <TrailerButton movieTitle={movie.Title} />
             <p>
               <em>{plot}</em>
             </p>

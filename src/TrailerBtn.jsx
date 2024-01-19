@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import YouTube from "react-youtube";
+import "./TrailerBtn.css";
 const TrailerButton = ({ movieTitle }) => {
   const [trailerVideoId, setTrailerVideoId] = useState(null);
+  const [showTrailer, setShowTrailer] = useState(false);
 
   useEffect(() => {
     // Function to fetch trailer information from YouTube Data API
@@ -38,15 +40,41 @@ const TrailerButton = ({ movieTitle }) => {
 
   const handlePlayTrailer = () => {
     if (trailerVideoId) {
-      // Open a modal or navigate to a new page with an embedded YouTube player
-      window.open(
-        `https://www.youtube.com/watch?v=${trailerVideoId}`,
-        "_blank"
-      );
+      // Set the state to show the trailer
+      setShowTrailer(true);
     }
   };
 
-  return <button onClick={handlePlayTrailer}>Play Trailer</button>;
+  const handleCloseTrailer = () => {
+    // Set the state to hide the trailer
+    setShowTrailer(false);
+  };
+
+  return (
+    <div className="trailer-container">
+      {showTrailer ? (
+        <div>
+          <YouTube
+            videoId={trailerVideoId}
+            opts={{
+              width: "100%",
+              height: "100%",
+              playerVars: {
+                autoplay: 1,
+              },
+            }}
+          />
+          <button className="close-button" onClick={handleCloseTrailer}>
+            Close Trailer
+          </button>
+        </div>
+      ) : (
+        <button className="play-button" onClick={handlePlayTrailer}>
+          Play Trailer
+        </button>
+      )}
+    </div>
+  );
 };
 
 export default TrailerButton;
