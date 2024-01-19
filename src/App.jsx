@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
-
+import TrailerButton from "./TrailerBtn";
 const key = "341e3adc";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -343,6 +343,7 @@ function MovieDetail({ selectedId, onCloseMovie, onAddWatch, watched }) {
                   you rated with movie {watchedUserRating} <span>⭐</span>
                 </p>
               )}
+              <TrailerButton movieTitle={movie.Title} />
             </div>
             <p>
               <em>{plot}</em>
