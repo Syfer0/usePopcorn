@@ -10,9 +10,9 @@ export default function App() {
   const [IsLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedID] = useState(null);
-  const [watched, setWatched] = useState(function () {
+  const [watched, setWatched] = useState(() => {
     const storedValue = localStorage.getItem("watched");
-    return JSON.parse(storedValue);
+    return JSON.parse(storedValue) || [];
   });
   function handleSelectMovie(id) {
     setSelectedID((selectedId) => (id === selectedId ? null : id));
