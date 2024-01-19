@@ -6,14 +6,16 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 export default function App() {
   const [query, setQuery] = useState("");
+  // const [watched, setWatched] = useState([]);
   const [movies, setMovies] = useState([]);
   const [IsLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedID] = useState(null);
-  const [watched, setWatched] = useState(function () {
+  const [watched, setWatched] = useState(() => {
     const storedValue = localStorage.getItem("watched");
-    return JSON.parse(storedValue);
+    return JSON.parse(storedValue) || [];
   });
+
   function handleSelectMovie(id) {
     setSelectedID((selectedId) => (id === selectedId ? null : id));
   }
