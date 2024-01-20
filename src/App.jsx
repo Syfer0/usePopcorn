@@ -133,6 +133,10 @@ function Logo() {
   );
 }
 function Search({ query, setQuery }) {
+  useEffect(function () {
+    const el = document.querySelector(".search");
+    el.focus();
+  }, []);
   return (
     <input
       className="search"
@@ -193,7 +197,7 @@ function WatchedList() {
   */
 function MoiveList({ movies, onSelectMovie }) {
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
         <Movie movie={movie} key={movie.imdbID} onSelectMovie={onSelectMovie} />
       ))}
@@ -387,7 +391,7 @@ function WatchSummery({ watched }) {
 }
 function WatchedMoiveList({ watched, onDeleteWatch }) {
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {watched.map((movie) => (
         <WatchedMoive
           movie={movie}
