@@ -27,7 +27,9 @@ body {
   color: var(--color-text);
   background-color: var(--color-background-900);
   padding: 2.4rem;
+  scroll-behavior: smooth;
 }
+/* overflow: hidden; */
 
 /* ******* */
 
@@ -57,7 +59,12 @@ body {
   overflow: auto;
   position: relative;
 }
-
+.search-movie-h2 {
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  text-align: center;
+  margin: 0.6rem 0;
+}
 .loader {
   text-align: center;
   text-transform: uppercase;

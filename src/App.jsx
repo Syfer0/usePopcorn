@@ -30,39 +30,46 @@ export default function App() {
 
   return (
     <>
-      <Navbar>
-        <Logo />
-        <Search query={query} setQuery={setQuery} />
-        <NumResults movies={movies} />
-      </Navbar>
-      <Main movies={movies}>
-        <Box>
-          {/* {IsLoading ? <Loader /> : <MoiveList movies={movies} />} */}
-          {IsLoading && <Loader />}
-          {!IsLoading && !error && (
-            <MoiveList movies={movies} onSelectMovie={handleSelectMovie} />
-          )}
-          {error && <Error message={error} />}
-        </Box>
-        <Box>
-          {selectedId ? (
-            <MovieDetail
-              selectedId={selectedId}
-              onCloseMovie={handleCloseMovie}
-              onAddWatch={handleAddWatched}
-              watched={watched}
-            />
-          ) : (
-            <>
-              <WatchSummery watched={watched} />
-              <WatchedMoiveList
+      <div className="container">
+        <Navbar>
+          <Logo />
+          <Search query={query} setQuery={setQuery} />
+          <NumResults movies={movies} />
+        </Navbar>
+        <Main movies={movies}>
+          <Box>
+            {!movies.length && (
+              <h2 className="search-movie-h2">Search Movies</h2>
+            )}
+            {/* {IsLoading ? <Loader /> : <MoiveList movies={movies} />} */}
+            {IsLoading && <Loader />}
+            {!IsLoading && !error && (
+              <>
+                <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+              </>
+            )}
+            {error && <Error message={error} />}
+          </Box>
+          <Box>
+            {selectedId ? (
+              <MovieDetail
+                selectedId={selectedId}
+                onCloseMovie={handleCloseMovie}
+                onAddWatch={handleAddWatched}
                 watched={watched}
-                onDeleteWatch={handleDeleteWatched}
               />
-            </>
-          )}
-        </Box>
-      </Main>
+            ) : (
+              <>
+                <WatchSummery watched={watched} />
+                <WatchedMoiveList
+                  watched={watched}
+                  onDeleteWatch={handleDeleteWatched}
+                />
+              </>
+            )}
+          </Box>
+        </Main>
+      </div>
     </>
   );
 }
@@ -132,7 +139,7 @@ function Box({ children }) {
     </div>
   );
 }
-function MoiveList({ movies, onSelectMovie }) {
+function MovieList({ movies, onSelectMovie }) {
   return (
     <ul className="list list-movies">
       {movies?.map((movie) => (
