@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 import TrailerButton from "./TrailerBtn";
-import { useMovies } from "./UseMovie";
-import { useLocalStorage } from "./UseLocalStorage";
-import { useKey } from "./Usekey";
+import { useMovies } from "./Custom Hooks/UseMovie";
+import { useLocalStorage } from "./Custom Hooks/UseLocalStorage";
+import { useKey } from "./Custom Hooks/Usekey";
 const key = "341e3adc";
 
 const average = (arr) =>
